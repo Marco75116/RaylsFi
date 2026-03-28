@@ -1,6 +1,6 @@
 import { ContentLayout } from "@/components/admin-panel/ContentLayout";
 import { CardCarousel } from "@/components/dashboard/CardCarousel";
-import { Button } from "@/components/ui/button";
+import { OrderCardDialog } from "@/components/dashboard/OrderCardDialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -11,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus } from "lucide-react";
 import { mockCards } from "@/lib/mock-data";
 
 export default function CardsPage() {
@@ -24,10 +23,7 @@ export default function CardsPage() {
 
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold tracking-tight">Your cards</h2>
-          <Button variant="outline" className="gap-2 rounded-full">
-            Add Card
-            <Plus className="size-4" />
-          </Button>
+          <OrderCardDialog />
         </div>
 
         <Table>
