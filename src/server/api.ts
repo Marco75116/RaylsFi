@@ -1,5 +1,9 @@
 import { Elysia, t } from "elysia";
-import { createStripeCardholder, createStripeCard } from "@/lib/stripe-helpers";
+import {
+  createStripeCardholder,
+  createStripeCard,
+  listStripeCards,
+} from "@/lib/stripe-helpers";
 
 const app = new Elysia({ prefix: "/api/v1" })
   .get("/health", () => ({ status: "ok" }))
@@ -32,6 +36,32 @@ const app = new Elysia({ prefix: "/api/v1" })
             country: t.String(),
           }),
         ),
+      }),
+    },
+  )
+  .get(
+    "/cards",
+    async ({ query }) => {
+      const cards = await listStripeCards(query.cardholderId);
+      return cards.map((card) => ({
+        id: card.id,
+        cardholderId:
+          typeof card.cardholder === "string"
+            ? card.cardholder
+            : card.cardholder.id,
+        last4: card.last4,
+        type: card.type,
+        status: card.status,
+        currency: card.currency,
+        brand: card.brand,
+        expMonth: card.exp_month,
+        expYear: card.exp_year,
+        created: card.created,
+      }));
+    },
+    {
+      query: t.Object({
+        cardholderId: t.String(),
       }),
     },
   )

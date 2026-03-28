@@ -99,6 +99,14 @@ interface CardInput {
   status?: "active" | "inactive";
 }
 
+export async function listStripeCards(cardholderId: string) {
+  const cards = await getStripe().issuing.cards.list({
+    cardholder: cardholderId,
+  });
+
+  return cards.data;
+}
+
 export async function createStripeCard(input: CardInput) {
   const card = await getStripe().issuing.cards.create({
     cardholder: input.cardholderId,

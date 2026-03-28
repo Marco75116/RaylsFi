@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { ContentLayout } from "@/components/admin-panel/ContentLayout";
 import { CardCarousel } from "@/components/dashboard/CardCarousel";
 import { OrderCardDialog } from "@/components/dashboard/OrderCardDialog";
@@ -11,13 +12,55 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { mockCards } from "@/lib/mock-data";
+import { auth } from "@/lib/auth";
+import { db } from "@/db";
+import { eq } from "drizzle-orm";
+import * as schema from "@/db/schema";
+import { listStripeCards } from "@/lib/stripe-helpers";
+import { Card } from "@/lib/types/dashboard";
 
-export default function CardsPage() {
+async function getUserCards(): Promise<Card[]> {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return [];
+
+  const dbUser = await db
+    .select({ stripeCardholderId: schema.user.stripeCardholderId })
+    .from(schema.user)
+    .where(eq(schema.user.id, session.user.id))
+    .then((rows) => rows[0]);
+
+  if (!dbUser?.stripeCardholderId) return [];
+
+  const stripeCards = await listStripeCards(dbUser.stripeCardholderId);
+
+  return stripeCards.map((card) => ({
+    id: card.id,
+    type: "virtual" as const,
+    name: card.cardholder
+      ? typeof card.cardholder === "string"
+        ? card.cardholder
+        : card.cardholder.name
+      : "",
+    last4: card.last4 ?? "0000",
+    status: card.status === "active" ? "active" : "frozen",
+    spendLimit: card.spending_controls?.spending_limits?.[0]?.amount ?? 0,
+    spent: 0,
+    expiryDate: `${String(card.exp_month).padStart(2, "0")}/${String(card.exp_year).slice(-2)}`,
+    cardHolder: card.cardholder
+      ? typeof card.cardholder === "string"
+        ? card.cardholder
+        : card.cardholder.name
+      : "",
+  }));
+}
+
+export default async function CardsPage() {
+  const cards = await getUserCards();
+
   return (
     <ContentLayout>
       <div className="mx-auto w-full max-w-4xl space-y-6 py-6">
-        <CardCarousel cards={mockCards} />
+        <CardCarousel cards={cards} />
 
         <Separator />
 
@@ -35,7 +78,7 @@ export default function CardsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockCards.map((card) => (
+            {cards.map((card) => (
               <TableRow key={card.id}>
                 <TableCell className="font-medium">{card.cardHolder}</TableCell>
                 <TableCell>
@@ -49,7 +92,11 @@ export default function CardsPage() {
                 <TableCell className="text-right">
                   <Badge
                     variant="outline"
-                    className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
+                    className={
+                      card.status === "active"
+                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
+                        : "border-amber-500/30 bg-amber-500/10 text-amber-600"
+                    }
                   >
                     {card.status.charAt(0).toUpperCase() + card.status.slice(1)}
                   </Badge>
