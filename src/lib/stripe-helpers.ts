@@ -85,5 +85,31 @@ export async function createStripeCardholder(input: CardholderInput) {
     preferred_locales: ["fr"],
   });
 
+  console.log(
+    `[stripe] Cardholder created: id=${cardholder.id}, email=${cardholder.email}`,
+  );
+
   return cardholder;
+}
+
+interface CardInput {
+  cardholderId: string;
+  currency?: string;
+  type?: "virtual" | "physical";
+  status?: "active" | "inactive";
+}
+
+export async function createStripeCard(input: CardInput) {
+  const card = await getStripe().issuing.cards.create({
+    cardholder: input.cardholderId,
+    currency: input.currency ?? "eur",
+    type: input.type ?? "virtual",
+    status: input.status ?? "active",
+  });
+
+  console.log(
+    `[stripe] Card created: id=${card.id}, cardholder=${card.cardholder.id}`,
+  );
+
+  return card;
 }
