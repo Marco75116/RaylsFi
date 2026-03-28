@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { Transaction } from "@/lib/types/dashboard";
 import { format } from "date-fns";
-import { toast } from "sonner";
+import Link from "next/link";
 
 type TransactionsListProps = {
   transactions: Transaction[];
@@ -91,15 +91,18 @@ export function TransactionsList({ transactions }: TransactionsListProps) {
               const config = typeConfig[tx.type];
               const Icon = tx.type === "receive" ? Plus : config.icon;
 
+              const fmt = (v: number) =>
+                new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(v);
+
               const formattedAmount =
                 tx.type === "purchase"
-                  ? `– $${tx.amount.toFixed(2)} USD`
+                  ? `– ${fmt(tx.amount)} USD`
                   : tx.usdValue > 0
-                    ? new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(tx.usdValue)
-                    : `${config.sign} ${tx.amount.toFixed(2)}`;
+                    ? `${config.sign} ${fmt(tx.usdValue)}`
+                    : `${config.sign} ${fmt(tx.amount)}`;
 
               return (
                 <div key={tx.id}>
@@ -152,12 +155,8 @@ export function TransactionsList({ transactions }: TransactionsListProps) {
         ))}
       </CardContent>
       <CardFooter>
-        <Button
-          variant="outline"
-          className="w-full rounded-full"
-          onClick={() => toast.info("View All Transactions — Coming soon")}
-        >
-          View All Transactions
+        <Button variant="outline" className="w-full rounded-full" asChild>
+          <Link href="/transactions">View All Transactions</Link>
         </Button>
       </CardFooter>
     </Card>

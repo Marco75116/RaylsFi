@@ -1,6 +1,7 @@
 import {
   LayoutGrid,
   CreditCard,
+  ArrowLeftRight,
   Settings,
   Headset,
   type LucideIcon,
@@ -45,6 +46,13 @@ export function getMenuList(pathname: string): Group[] {
           label: "Cards",
           active: pathname.includes("/overview/cards"),
           icon: CreditCard,
+          submenus: [],
+        },
+        {
+          href: "/transactions",
+          label: "Transactions",
+          active: pathname.includes("/transactions"),
+          icon: ArrowLeftRight,
           submenus: [],
         },
       ],
