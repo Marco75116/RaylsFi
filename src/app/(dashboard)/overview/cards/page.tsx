@@ -2,16 +2,8 @@ import { headers } from "next/headers";
 import { ContentLayout } from "@/components/admin-panel/ContentLayout";
 import { CardCarousel } from "@/components/dashboard/CardCarousel";
 import { OrderCardDialog } from "@/components/dashboard/OrderCardDialog";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { CardsTable } from "@/components/dashboard/CardsTable";
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
 import { eq } from "drizzle-orm";
@@ -69,42 +61,7 @@ export default async function CardsPage() {
           <OrderCardDialog />
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[200px]">Card holder</TableHead>
-              <TableHead>Card</TableHead>
-              <TableHead className="text-right">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {cards.map((card) => (
-              <TableRow key={card.id}>
-                <TableCell className="font-medium">{card.cardHolder}</TableCell>
-                <TableCell>
-                  <span className="flex items-center gap-2">
-                    ..{card.last4} {card.name}
-                    <Badge variant="secondary" className="text-[10px]">
-                      {card.type.toUpperCase()}
-                    </Badge>
-                  </span>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Badge
-                    variant="outline"
-                    className={
-                      card.status === "active"
-                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
-                        : "border-amber-500/30 bg-amber-500/10 text-amber-600"
-                    }
-                  >
-                    {card.status.charAt(0).toUpperCase() + card.status.slice(1)}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <CardsTable cards={cards} />
       </div>
     </ContentLayout>
   );

@@ -5,7 +5,10 @@ import { auth } from "@/lib/auth";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { createStripeCard } from "@/lib/stripe-helpers";
+import {
+  createStripeCard,
+  retrieveStripeCardDetails,
+} from "@/lib/stripe-helpers";
 
 export async function createCard(type: "virtual" | "physical") {
   const session = await auth.api.getSession({
@@ -37,4 +40,16 @@ export async function createCard(type: "virtual" | "physical") {
     last4: card.last4,
     status: card.status,
   };
+}
+
+export async function getCardDetails(cardId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  return retrieveStripeCardDetails(cardId);
 }

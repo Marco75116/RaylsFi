@@ -107,6 +107,22 @@ export async function listStripeCards(cardholderId: string) {
   return cards.data;
 }
 
+export async function retrieveStripeCardDetails(cardId: string) {
+  const card = await getStripe().issuing.cards.retrieve(cardId, {
+    expand: ["number", "cvc"],
+  });
+
+  return {
+    id: card.id,
+    number: card.number ?? null,
+    cvc: card.cvc ?? null,
+    last4: card.last4,
+    expMonth: card.exp_month,
+    expYear: card.exp_year,
+    brand: card.brand,
+  };
+}
+
 export async function createStripeCard(input: CardInput) {
   const card = await getStripe().issuing.cards.create({
     cardholder: input.cardholderId,
