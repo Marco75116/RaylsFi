@@ -1,4 +1,5 @@
 import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/admin-panel/AppSidebar";
@@ -14,6 +15,10 @@ export default async function DashboardLayout({
     cookies(),
     auth.api.getSession({ headers: await headers() }),
   ]);
+  if (!session) {
+    redirect("/sign-in");
+  }
+
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
 
   return (
@@ -26,7 +31,7 @@ export default async function DashboardLayout({
         } as React.CSSProperties
       }
     >
-      <AppSidebar user={session?.user ?? null} />
+      <AppSidebar user={session.user} />
       <SidebarInset className="bg-muted/50">
         <div className="flex min-h-svh flex-col">
           <div className="flex-1">{children}</div>
