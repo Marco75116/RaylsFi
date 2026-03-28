@@ -1,5 +1,5 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Wallet } from "lucide-react";
 
 import {
   Sidebar,
@@ -23,9 +23,13 @@ export function AppSidebar({ user }: AppSidebarProps) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild tooltip="RaylsFi">
               <Link href="/dashboard">
-                <div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                  <Wallet className="size-4" />
-                </div>
+                <Image
+                  src="/rayls-icon.png"
+                  alt="Rayls"
+                  width={32}
+                  height={32}
+                  className="rounded-md"
+                />
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold tracking-tight">RaylsFi</span>
                   <span className="text-[11px] text-sidebar-foreground/50">
