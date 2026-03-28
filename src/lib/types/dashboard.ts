@@ -27,6 +27,7 @@ export type Transaction = {
 export type Card = {
   id: string;
   type: "virtual";
+  name: string;
   last4: string;
   status: "active" | "frozen" | "pending";
   spendLimit: number;
