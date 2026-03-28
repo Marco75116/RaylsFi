@@ -148,7 +148,7 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
           </TabsList>
         </Tabs>
       </CardHeader>
-      <CardContent>
+      <CardContent className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
