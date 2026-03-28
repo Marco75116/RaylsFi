@@ -138,16 +138,6 @@ export const mockCards: Card[] = [
     expiryDate: "12/28",
     cardHolder: "RAYLS USER",
   },
-  {
-    id: "2",
-    type: "physical",
-    last4: "7316",
-    status: "pending",
-    spendLimit: 10000,
-    spent: 0,
-    expiryDate: "06/29",
-    cardHolder: "RAYLS USER",
-  },
 ];
 
 export const mockTotalBalance = mockAssets.reduce(
