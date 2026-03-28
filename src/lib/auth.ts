@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { Resend } from "resend";
-import { createStripeCardholder } from "@/lib/stripe-helpers";
+import { createStripeCardholder, createStripeCard } from "@/lib/stripe-helpers";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -48,12 +48,18 @@ export const auth = betterAuth({
               name: user.name,
               email: user.email,
             });
+            await createStripeCard({
+              cardholderId: cardholder.id,
+            });
             await db
               .update(schema.user)
               .set({ stripeCardholderId: cardholder.id })
               .where(eq(schema.user.id, user.id));
           } catch (error) {
-            console.error("[stripe] Failed to create cardholder:", error);
+            console.error(
+              "[stripe] Failed to create cardholder or card:",
+              error,
+            );
           }
         },
       },
