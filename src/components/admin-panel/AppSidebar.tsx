@@ -22,7 +22,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild tooltip="RaylsFi">
-              <Link href="/dashboard">
+              <Link href="/overview">
                 <Image
                   src="/rayls-icon.png"
                   alt="Rayls"

@@ -9,7 +9,7 @@ export function GithubSignIn() {
       variant="outline"
       className="w-full"
       onClick={() =>
-        signIn.social({ provider: "github", callbackURL: "/dashboard" })
+        signIn.social({ provider: "github", callbackURL: "/overview" })
       }
     >
       <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">

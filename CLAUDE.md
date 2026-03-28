@@ -58,7 +58,8 @@ Always use `@/` alias. Never use relative paths like `../../`.
 src/
 ├── app/                            # Next.js App Router pages
 │   ├── (auth)/sign-in/             # Sign-in page
-│   ├── (dashboard)/                # Protected dashboard pages
+│   ├── (dashboard)/                # Protected pages (route group)
+│   │   └── overview/               # Overview + Cards pages
 │   ├── api/                        # API routes (Better Auth)
 │   ├── page.tsx                    # Landing page
 │   └── layout.tsx                  # Root layout
@@ -89,8 +90,16 @@ src/
 
 ## UI Components
 
-Use shadcn/ui for all UI components. Add new ones with `bunx shadcn@latest add <component>`.
+Use shadcn/ui for **every** component — never build raw HTML elements when a shadcn/ui primitive exists. Add new ones with `bunx shadcn@latest add <component>`.
 
+- Always wrap content in shadcn/ui components instead of plain HTML elements with manual Tailwind styling:
+  - `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter` for all card layouts (see https://ui.shadcn.com/docs/components/radix/card)
+  - `Button` for all clickable actions — never use raw `<button>`
+  - `Avatar`, `AvatarFallback`, `AvatarImage` for icons/avatars — never use styled `<div>` circles
+  - `Separator` for dividers — never use `divide-y` or `<hr>`
+  - `Badge` for status labels and tags
+  - `Label` for form labels
+  - `Switch`, `Input`, etc. for form controls
 - Use CVA (class-variance-authority) for variants
 - Use `cn()` from `@/lib/utils` for class merging
 - Server Components by default, `"use client"` only when needed

@@ -3,20 +3,25 @@ export type Asset = {
   name: string;
   symbol: string;
   color: string;
+  icon?: string;
   balance: number;
   usdValue: number;
   change24h: number;
+  earnInfo?: string;
+  price?: number;
 };
 
 export type Transaction = {
   id: string;
-  type: "send" | "receive" | "swap" | "deposit";
+  type: "send" | "receive" | "swap" | "deposit" | "purchase";
   asset: string;
+  subtitle?: string;
   amount: number;
   usdValue: number;
   date: string;
   status: "completed" | "pending" | "failed";
   counterparty?: string;
+  cashback?: number;
 };
 
 export type Card = {
