@@ -14,7 +14,7 @@ export function ResendSignIn() {
     e.preventDefault();
     await authClient.signIn.magicLink({
       email,
-      callbackURL: "/dashboard",
+      callbackURL: "/overview",
     });
     setSent(true);
   };

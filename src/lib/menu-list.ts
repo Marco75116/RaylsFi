@@ -34,16 +34,16 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Dashboard",
       menus: [
         {
-          href: "/dashboard",
+          href: "/overview",
           label: "Overview",
-          active: pathname === "/dashboard",
+          active: pathname === "/overview",
           icon: LayoutGrid,
           submenus: [],
         },
         {
-          href: "/dashboard/cards",
+          href: "/overview/cards",
           label: "Cards",
-          active: pathname.includes("/dashboard/cards"),
+          active: pathname.includes("/overview/cards"),
           icon: CreditCard,
           submenus: [],
         },
