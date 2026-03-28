@@ -19,6 +19,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@elysiajs/eden": "^1.4.8",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -36,6 +37,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.2",
+    "elysia": "^1.4.28",
     "geist": "^1.7.0",
     "lucide-react": "^1.7.0",
     "next": "16.2.1",
