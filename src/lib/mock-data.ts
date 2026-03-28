@@ -39,8 +39,8 @@ export const mockTransactions: Transaction[] = [
   {
     id: "1",
     type: "send",
-    asset: "WETH",
-    subtitle: "liquidETH",
+    asset: "$USDr",
+    subtitle: "Transfer",
     amount: 1.2,
     usdValue: 0,
     date: "2026-03-03T10:30:00Z",
@@ -49,8 +49,8 @@ export const mockTransactions: Transaction[] = [
   {
     id: "2",
     type: "receive",
-    asset: "WETH",
-    subtitle: "1.20",
+    asset: "$USDr",
+    subtitle: undefined,
     amount: 1.2,
     usdValue: 2330.31,
     date: "2026-03-03T10:30:00Z",
@@ -59,7 +59,7 @@ export const mockTransactions: Transaction[] = [
   {
     id: "3",
     type: "receive",
-    asset: "WETH",
+    asset: "$USDr",
     amount: 0.8,
     usdValue: 1500.31,
     date: "2026-03-03T09:00:00Z",

@@ -17,7 +17,15 @@ export default async function DashboardLayout({
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
+    <SidebarProvider
+      defaultOpen={defaultOpen}
+      style={
+        {
+          "--sidebar-width": "18rem",
+          "--sidebar-width-mobile": "18rem",
+        } as React.CSSProperties
+      }
+    >
       <AppSidebar user={session?.user ?? null} />
       <SidebarInset className="bg-muted/50">
         <div className="flex min-h-svh flex-col">
