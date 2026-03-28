@@ -68,6 +68,14 @@ export function CardCarousel({ cards }: CardCarouselProps) {
 
   if (cards.length === 0) return null;
 
+  if (cards.length === 1) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <CardVisual card={cards[0]} />
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center justify-center gap-6 py-8">
       <Button
