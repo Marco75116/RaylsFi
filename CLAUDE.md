@@ -1,6 +1,11 @@
 # RaylsFi
 
-Web3 card dashboard app inspired by ether.fi Cash. Users manage crypto assets, virtual/physical cards, and transactions.
+Web3 card dashboard app built on top of [Rayls](https://www.rayls.com/). Users manage crypto assets, virtual/physical cards, and transactions.
+
+## Branding
+
+- **Logo**: Rayls icon at `public/rayls-icon.png` — use `next/image` with this asset for all logo placements
+- **Brand name**: RaylsFi
 
 ## Design Philosophy
 
