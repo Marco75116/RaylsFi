@@ -1,31 +1,67 @@
 import { ContentLayout } from "@/components/admin-panel/ContentLayout";
-import { CardItem } from "@/components/dashboard/CardItem";
+import { CardCarousel } from "@/components/dashboard/CardCarousel";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Plus } from "lucide-react";
 import { mockCards } from "@/lib/mock-data";
 
 export default function CardsPage() {
   return (
     <ContentLayout>
-      <div className="mx-auto w-full max-w-2xl space-y-6 py-6">
+      <div className="mx-auto w-full max-w-4xl space-y-6 py-6">
+        <CardCarousel cards={mockCards} />
+
+        <Separator />
+
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Your Cards</h1>
-            <p className="text-sm text-muted-foreground">
-              Manage your virtual and physical cards
-            </p>
-          </div>
-          <Button disabled className="gap-2">
+          <h2 className="text-xl font-semibold tracking-tight">Your cards</h2>
+          <Button variant="outline" className="gap-2 rounded-full">
+            Add Card
             <Plus className="size-4" />
-            Request Card
           </Button>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2">
-          {mockCards.map((card) => (
-            <CardItem key={card.id} card={card} />
-          ))}
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[200px]">Card holder</TableHead>
+              <TableHead>Card</TableHead>
+              <TableHead className="text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {mockCards.map((card) => (
+              <TableRow key={card.id}>
+                <TableCell className="font-medium">{card.cardHolder}</TableCell>
+                <TableCell>
+                  <span className="flex items-center gap-2">
+                    ..{card.last4} {card.name}
+                    <Badge variant="secondary" className="text-[10px]">
+                      {card.type.toUpperCase()}
+                    </Badge>
+                  </span>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Badge
+                    variant="outline"
+                    className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
+                  >
+                    {card.status.charAt(0).toUpperCase() + card.status.slice(1)}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </ContentLayout>
   );
