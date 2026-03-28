@@ -17,7 +17,7 @@ PROFESSIONAL. CLEAN. MODERN.
 - **Language**: TypeScript 5
 - **UI**: shadcn/ui (New York style, zinc base color) + Radix UI + Tailwind CSS 4
 - **State**: Zustand
-- **Auth**: Better Auth (GitHub, Google, Resend magic link) + Drizzle adapter
+- **Auth**: Better Auth (GitHub, Google, Resend magic link) + Drizzle adapter — always leverage Better Auth's built-in features (session management, middleware helpers, plugins) instead of custom implementations
 - **Database**: PostgreSQL via Drizzle ORM
 - **Deployment**: Vercel
 
