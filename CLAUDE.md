@@ -119,6 +119,7 @@ Required:
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth
 - `AUTH_RESEND_KEY` — Resend API key for magic link emails
+- `STRIPE_SECRET_KEY` — Stripe secret key for Issuing API
 - `NEXT_PUBLIC_APP_URL` — Public app URL
 
 ## Database
@@ -126,6 +127,16 @@ Required:
 PostgreSQL with Drizzle ORM. Tables: `user`, `session`, `account`, `verification` (Better Auth core tables).
 
 Start the database: `bun run db:start` (requires Docker).
+
+## Stripe Issuing
+
+Cards are issued on behalf of users via [Stripe Issuing](https://docs.stripe.com/issuing).
+
+- **Client**: `src/lib/stripe.ts` — singleton Stripe SDK client
+- **Helpers**: `src/lib/stripe-helpers.ts` — cardholder creation logic
+- **Auto-creation**: Cardholders are created via Better Auth `databaseHooks` on user signup (`src/lib/auth.ts`)
+- **API endpoint**: `POST /api/v1/cardholders` — manual cardholder creation via Elysia
+- **Placeholders**: Phone and billing address use default values (user schema lacks these fields)
 
 ## Dependencies
 

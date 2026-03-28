@@ -1,9 +1,11 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { magicLink } from "better-auth/plugins";
+import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { Resend } from "resend";
+import { createStripeCardholder } from "@/lib/stripe-helpers";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -36,6 +38,26 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     storeSessionInDatabase: true,
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          try {
+            const cardholder = await createStripeCardholder({
+              name: user.name,
+              email: user.email,
+            });
+            await db
+              .update(schema.user)
+              .set({ stripeCardholderId: cardholder.id })
+              .where(eq(schema.user.id, user.id));
+          } catch (error) {
+            console.error("[stripe] Failed to create cardholder:", error);
+          }
+        },
+      },
+    },
   },
 });
 
