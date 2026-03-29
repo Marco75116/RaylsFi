@@ -215,39 +215,41 @@ export function CardDetailsDialog({
             <p className="text-center text-sm text-destructive">{error}</p>
           )}
 
-          {!flipped && (
-            <Button
-              onClick={handleReveal}
-              disabled={isPending}
-              variant="outline"
-              className="gap-2 rounded-full"
-            >
-              {isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Eye className="size-4" />
-              )}
-              Show card details
-            </Button>
-          )}
+          <div className="flex gap-3">
+            {!flipped && (
+              <Button
+                onClick={handleReveal}
+                disabled={isPending}
+                variant="outline"
+                className="gap-2 rounded-full"
+              >
+                {isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Eye className="size-4" />
+                )}
+                Show card details
+              </Button>
+            )}
 
-          {cardStatus !== "pending" && (
-            <Button
-              onClick={handleToggleStatus}
-              disabled={isToggling}
-              variant={cardStatus === "active" ? "outline" : "default"}
-              className="gap-2 rounded-full"
-            >
-              {isToggling ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : cardStatus === "active" ? (
-                <Snowflake className="size-4" />
-              ) : (
-                <ShieldCheck className="size-4" />
-              )}
-              {cardStatus === "active" ? "Freeze card" : "Unfreeze card"}
-            </Button>
-          )}
+            {cardStatus !== "pending" && (
+              <Button
+                onClick={handleToggleStatus}
+                disabled={isToggling}
+                variant={cardStatus === "active" ? "outline" : "default"}
+                className="gap-2 rounded-full"
+              >
+                {isToggling ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : cardStatus === "active" ? (
+                  <Snowflake className="size-4" />
+                ) : (
+                  <ShieldCheck className="size-4" />
+                )}
+                {cardStatus === "active" ? "Freeze card" : "Unfreeze card"}
+              </Button>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
