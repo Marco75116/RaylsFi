@@ -1,10 +1,12 @@
 import { headers } from "next/headers";
+import Link from "next/link";
 import { ContentLayout } from "@/components/admin-panel/ContentLayout";
 import { CardCarousel } from "@/components/dashboard/CardCarousel";
 import { OrderCardDialog } from "@/components/dashboard/OrderCardDialog";
-import { SimulatePaymentDialog } from "@/components/dashboard/SimulatePaymentDialog";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CardsTable } from "@/components/dashboard/CardsTable";
+import { ShoppingCart } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
 import { eq } from "drizzle-orm";
@@ -60,7 +62,12 @@ export default async function CardsPage() {
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold tracking-tight">Your cards</h2>
           <div className="flex gap-2">
-            <SimulatePaymentDialog cards={cards} />
+            <Button variant="outline" className="gap-2 rounded-full" asChild>
+              <Link href="/checkout" target="_blank">
+                Simulate Payment
+                <ShoppingCart className="size-4" />
+              </Link>
+            </Button>
             <OrderCardDialog />
           </div>
         </div>
