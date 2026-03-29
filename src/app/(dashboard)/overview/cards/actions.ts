@@ -86,7 +86,7 @@ export async function fundBalance(amount: number) {
   }
 
   await fundTestIssuingBalance(amount);
-  await depositToVault(session.user.id, amount);
+  const txHash = await depositToVault(session.user.id, amount);
 
   await db.insert(schema.fundTransfer).values({
     id: crypto.randomUUID(),
@@ -96,7 +96,7 @@ export async function fundBalance(amount: number) {
     method: "ach",
   });
 
-  return { funded: amount };
+  return { funded: amount, txHash };
 }
 
 export async function simulatePayment(
@@ -118,7 +118,7 @@ export async function simulatePayment(
     merchantName,
   });
 
-  await withdrawFromVault(session.user.id, amount);
+  const txHash = await withdrawFromVault(session.user.id, amount);
 
-  return result;
+  return { ...result, txHash };
 }

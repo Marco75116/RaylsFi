@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   CreditCard,
   Shuffle,
+  ExternalLink,
 } from "lucide-react";
 import { simulatePayment } from "@/app/(dashboard)/overview/cards/actions";
 import { Card } from "@/lib/types/dashboard";
@@ -47,6 +48,7 @@ export function SimulatePaymentDialog({ cards }: SimulatePaymentDialogProps) {
   const [success, setSuccess] = useState<{
     amount: number;
     merchantName: string;
+    txHash: string;
   } | null>(null);
 
   function handleOpenChange(nextOpen: boolean) {
@@ -88,6 +90,7 @@ export function SimulatePaymentDialog({ cards }: SimulatePaymentDialogProps) {
         setSuccess({
           amount: result.amount / 100,
           merchantName: result.merchantName,
+          txHash: result.txHash,
         });
       } catch (e) {
         setError(e instanceof Error ? e.message : "Failed to simulate payment");
@@ -124,13 +127,28 @@ export function SimulatePaymentDialog({ cards }: SimulatePaymentDialogProps) {
                 {success.amount.toFixed(2)} EUR at {success.merchantName}
               </p>
             </div>
-            <Button
-              variant="outline"
-              className="rounded-full"
-              onClick={() => handleOpenChange(false)}
-            >
-              Done
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="gap-2 rounded-full"
+                onClick={() =>
+                  window.open(
+                    `https://testnet-explorer.rayls.com/tx/${success.txHash}`,
+                    "_blank",
+                  )
+                }
+              >
+                View tx
+                <ExternalLink className="size-3.5" />
+              </Button>
+              <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={() => handleOpenChange(false)}
+              >
+                Done
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="space-y-5 py-4">

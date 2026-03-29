@@ -96,12 +96,13 @@ export function TransactionsList({ transactions }: TransactionsListProps) {
                   maximumFractionDigits: 2,
                 }).format(v)}`;
 
+              const currency = tx.type === "fund" ? "USD" : "USDr";
               const formattedAmount =
                 tx.type === "purchase"
-                  ? `– ${fmt(tx.amount)} USDr`
+                  ? `– ${fmt(tx.amount)} ${currency}`
                   : tx.usdValue > 0
-                    ? `${config.sign} ${fmt(tx.usdValue)} USDr`
-                    : `${config.sign} ${fmt(tx.amount)} USDr`;
+                    ? `${config.sign} ${fmt(tx.usdValue)} ${currency}`
+                    : `${config.sign} ${fmt(tx.amount)} ${currency}`;
 
               return (
                 <div key={tx.id}>

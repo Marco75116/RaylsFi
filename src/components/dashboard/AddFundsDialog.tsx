@@ -89,8 +89,20 @@ function BankTransferView({ userName }: { userName: string }) {
 
     startTransition(async () => {
       try {
-        await fundBalance(cents);
-        toast.success(`$${(cents / 100).toFixed(2)} funded to issuing balance`);
+        const { txHash } = await fundBalance(cents);
+        toast.success(
+          `$${(cents / 100).toFixed(2)} funded to issuing balance`,
+          {
+            action: {
+              label: "View tx",
+              onClick: () =>
+                window.open(
+                  `https://testnet-explorer.rayls.com/tx/${txHash}`,
+                  "_blank",
+                ),
+            },
+          },
+        );
         setAmount("");
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Failed to fund balance");
