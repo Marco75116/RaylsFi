@@ -8,7 +8,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Eye, Loader2, Snowflake, ShieldCheck, Wifi } from "lucide-react";
+import {
+  Eye,
+  Loader2,
+  Snowflake,
+  ShieldCheck,
+  Wifi,
+  Copy,
+  Check,
+} from "lucide-react";
 import Image from "next/image";
 import { Card } from "@/lib/types/dashboard";
 import {
@@ -45,10 +53,14 @@ function CardFlip({
   card,
   details,
   flipped,
+  copied,
+  onCopy,
 }: {
   card: Card;
   details: CardDetails | null;
   flipped: boolean;
+  copied: boolean;
+  onCopy: () => void;
 }) {
   const displayNumber = details?.number
     ? details.number.replace(/(.{4})/g, "$1 ").trim()
@@ -113,9 +125,24 @@ function CardFlip({
             <Wifi className="size-5 rotate-90 opacity-60" />
           </div>
           <div className="space-y-3">
-            <p className="font-mono text-lg tracking-[0.2em]">
-              {displayNumber}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="font-mono text-lg tracking-[0.2em]">
+                {displayNumber}
+              </p>
+              {details?.number && (
+                <button
+                  type="button"
+                  onClick={onCopy}
+                  className="opacity-70 transition-opacity hover:opacity-100"
+                >
+                  {copied ? (
+                    <Check className="size-4" />
+                  ) : (
+                    <Copy className="size-4" />
+                  )}
+                </button>
+              )}
+            </div>
             <div className="flex items-end justify-between">
               <div className="flex gap-6">
                 <div>
@@ -159,6 +186,7 @@ export function CardDetailsDialog({
   const [error, setError] = useState<string | null>(null);
   const [cardStatus, setCardStatus] = useState(card.status);
   const [isToggling, startToggleTransition] = useTransition();
+  const [copied, setCopied] = useState(false);
 
   function handleReveal() {
     setError(null);
@@ -195,6 +223,7 @@ export function CardDetailsDialog({
       setDetails(null);
       setFlipped(false);
       setError(null);
+      setCopied(false);
     }
     onOpenChange(value);
   }
@@ -209,7 +238,21 @@ export function CardDetailsDialog({
         </DialogHeader>
 
         <div className="flex flex-col items-center gap-6 py-4">
-          <CardFlip card={card} details={details} flipped={flipped} />
+          <CardFlip
+            card={card}
+            details={details}
+            flipped={flipped}
+            copied={copied}
+            onCopy={() => {
+              if (details?.number) {
+                navigator.clipboard.writeText(
+                  details.number.replace(/\s/g, ""),
+                );
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }
+            }}
+          />
 
           {error && (
             <p className="text-center text-sm text-destructive">{error}</p>
