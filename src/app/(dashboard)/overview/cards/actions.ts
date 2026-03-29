@@ -11,6 +11,7 @@ import {
   retrieveStripeCardDetails,
   simulateStripePayment,
 } from "@/lib/stripe-helpers";
+import { depositToVault } from "@/lib/rayls";
 
 export async function createCard(type: "virtual" | "physical") {
   const session = await auth.api.getSession({
@@ -66,6 +67,7 @@ export async function fundBalance(amount: number) {
   }
 
   await fundTestIssuingBalance(amount);
+  await depositToVault(session.user.id, amount);
 
   await db.insert(schema.fundTransfer).values({
     id: crypto.randomUUID(),
