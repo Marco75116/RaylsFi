@@ -67,6 +67,14 @@ export async function fundBalance(amount: number) {
 
   await fundTestIssuingBalance(amount);
 
+  await db.insert(schema.fundTransfer).values({
+    id: crypto.randomUUID(),
+    userId: session.user.id,
+    amount,
+    currency: "eur",
+    method: "ach",
+  });
+
   return { funded: amount };
 }
 
