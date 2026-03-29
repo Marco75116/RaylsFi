@@ -7,6 +7,7 @@ import * as schema from "@/db/schema";
 import { eq } from "drizzle-orm";
 import {
   createStripeCard,
+  fundTestIssuingBalance,
   retrieveStripeCardDetails,
   simulateStripePayment,
 } from "@/lib/stripe-helpers";
@@ -53,6 +54,20 @@ export async function getCardDetails(cardId: string) {
   }
 
   return retrieveStripeCardDetails(cardId);
+}
+
+export async function fundBalance(amount: number) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  await fundTestIssuingBalance(amount);
+
+  return { funded: amount };
 }
 
 export async function simulatePayment(
