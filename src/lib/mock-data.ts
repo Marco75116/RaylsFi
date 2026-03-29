@@ -48,7 +48,7 @@ export const mockTransactions: Transaction[] = [
   },
   {
     id: "2",
-    type: "receive",
+    type: "fund",
     asset: "$USDr",
     subtitle: undefined,
     amount: 1.2,
@@ -58,7 +58,7 @@ export const mockTransactions: Transaction[] = [
   },
   {
     id: "3",
-    type: "receive",
+    type: "fund",
     asset: "$USDr",
     amount: 0.8,
     usdValue: 1500.31,

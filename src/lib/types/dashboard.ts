@@ -13,7 +13,7 @@ export type Asset = {
 
 export type Transaction = {
   id: string;
-  type: "send" | "receive" | "swap" | "deposit" | "purchase";
+  type: "send" | "fund" | "swap" | "deposit" | "purchase";
   asset: string;
   subtitle?: string;
   amount: number;

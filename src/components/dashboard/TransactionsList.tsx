@@ -30,7 +30,7 @@ type TransactionsListProps = {
 };
 
 const typeConfig = {
-  receive: {
+  fund: {
     icon: ArrowDownLeft,
     color: "text-emerald-600",
     bgColor: "bg-emerald-50",
@@ -89,7 +89,7 @@ export function TransactionsList({ transactions }: TransactionsListProps) {
             </CardDescription>
             {txs.map((tx, txIndex) => {
               const config = typeConfig[tx.type];
-              const Icon = tx.type === "receive" ? Plus : config.icon;
+              const Icon = tx.type === "fund" ? Plus : config.icon;
 
               const fmt = (v: number) =>
                 new Intl.NumberFormat("en-US", {

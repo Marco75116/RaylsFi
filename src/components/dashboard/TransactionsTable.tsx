@@ -38,12 +38,12 @@ type TransactionsTableProps = {
 };
 
 const typeConfig = {
-  receive: {
+  fund: {
     icon: ArrowDownLeft,
     color: "text-emerald-600",
     bgColor: "bg-emerald-50",
     sign: "+",
-    label: "Received",
+    label: "Fund",
   },
   send: {
     icon: ArrowUpRight,
@@ -84,8 +84,6 @@ const statusVariant: Record<
   failed: "destructive",
 };
 
-type FilterTab = "all" | Transaction["type"];
-
 function formatAmount(tx: Transaction, sign: string) {
   const fmt = (value: number) =>
     new Intl.NumberFormat("en-US", {
@@ -101,6 +99,8 @@ function formatAmount(tx: Transaction, sign: string) {
   }
   return `${sign} ${fmt(tx.amount)}`;
 }
+
+type FilterTab = "all" | Transaction["type"];
 
 export function TransactionsTable({ transactions }: TransactionsTableProps) {
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
@@ -141,10 +141,8 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
         >
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="receive">Received</TabsTrigger>
-            <TabsTrigger value="send">Sent</TabsTrigger>
+            <TabsTrigger value="fund">Fund</TabsTrigger>
             <TabsTrigger value="purchase">Purchases</TabsTrigger>
-            <TabsTrigger value="swap">Swaps</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>
@@ -172,7 +170,7 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
             ) : (
               filtered.map((tx) => {
                 const config = typeConfig[tx.type];
-                const Icon = tx.type === "receive" ? Plus : config.icon;
+                const Icon = tx.type === "fund" ? Plus : config.icon;
 
                 return (
                   <TableRow
