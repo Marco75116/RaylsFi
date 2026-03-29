@@ -298,6 +298,14 @@ export async function simulateStripePayment(input: SimulatePaymentInput) {
   };
 }
 
+export async function updateStripeCardStatus(
+  cardId: string,
+  status: "active" | "inactive",
+) {
+  const card = await getStripe().issuing.cards.update(cardId, { status });
+  return { id: card.id, status: card.status };
+}
+
 export async function createStripeCard(input: CardInput) {
   const card = await getStripe().issuing.cards.create({
     cardholder: input.cardholderId,

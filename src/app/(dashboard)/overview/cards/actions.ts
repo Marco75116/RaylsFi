@@ -10,7 +10,9 @@ import {
   fundTestIssuingBalance,
   retrieveStripeCardDetails,
   simulateStripePayment,
+  updateStripeCardStatus,
 } from "@/lib/stripe-helpers";
+import { revalidatePath } from "next/cache";
 import { depositToVault, withdrawFromVault } from "@/lib/rayls";
 
 export async function createCard(type: "virtual" | "physical") {
@@ -55,6 +57,23 @@ export async function getCardDetails(cardId: string) {
   }
 
   return retrieveStripeCardDetails(cardId);
+}
+
+export async function toggleCardStatus(
+  cardId: string,
+  newStatus: "active" | "inactive",
+) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  const result = await updateStripeCardStatus(cardId, newStatus);
+  revalidatePath("/overview/cards");
+  return result;
 }
 
 export async function fundBalance(amount: number) {
