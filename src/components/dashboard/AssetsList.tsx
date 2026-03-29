@@ -11,7 +11,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { ChevronRight } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 import { Asset } from "@/lib/types/dashboard";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -33,21 +38,14 @@ export function AssetsList({ assets }: AssetsListProps) {
         <CardContent className="p-0">
           {assets.map((asset, index) => {
             const formattedBalance = new Intl.NumberFormat("en-US", {
-              minimumFractionDigits: asset.balance < 10 ? 4 : 2,
-              maximumFractionDigits: asset.balance < 10 ? 4 : 2,
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
             }).format(asset.balance);
 
-            const formattedUsd = new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-            }).format(asset.usdValue);
-
-            const formattedPrice = asset.price
-              ? new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(asset.price)
-              : null;
+            const formattedUsd = `$${new Intl.NumberFormat("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(asset.usdValue)}`;
 
             return (
               <div key={asset.id}>
@@ -63,24 +61,29 @@ export function AssetsList({ assets }: AssetsListProps) {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <CardTitle className="text-sm">{asset.name}</CardTitle>
-                      {asset.earnInfo && (
-                        <CardDescription className="text-xs">
-                          {asset.earnInfo}
-                        </CardDescription>
-                      )}
+                      <div className="flex items-center gap-1">
+                        <CardTitle className="text-sm">{asset.name}</CardTitle>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="size-3.5 text-muted-foreground cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            Yield generated from public chain DeFi
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <span className="text-xs font-medium text-emerald-600">
+                        +3.1%
+                      </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="text-right">
-                      <p className="text-sm font-medium">{formattedUsd}</p>
-                      {formattedPrice && (
-                        <CardDescription className="text-xs">
-                          {formattedBalance} · {formattedPrice}
-                        </CardDescription>
-                      )}
-                    </div>
-                    <ChevronRight className="size-4 text-muted-foreground" />
+                  <div className="text-right">
+                    <p className="text-sm font-medium">
+                      {formattedBalance} USDr
+                    </p>
+                    <CardDescription className="text-xs">
+                      {formattedUsd}
+                    </CardDescription>
                   </div>
                 </div>
               </div>
@@ -98,9 +101,9 @@ export function AssetsList({ assets }: AssetsListProps) {
           <Button
             variant="outline"
             className="rounded-full"
-            onClick={() => toast.info("Earn More — Coming soon")}
+            onClick={() => toast.info("Buy Stocks — Coming soon")}
           >
-            Earn More
+            Buy Stocks
           </Button>
         </CardFooter>
       </Card>

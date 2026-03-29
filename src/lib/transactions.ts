@@ -15,7 +15,7 @@ async function getFundTransactions(userId: string): Promise<Transaction[]> {
   return rows.map((row) => ({
     id: row.id,
     type: "fund" as const,
-    asset: `${row.amount / 100} USD`,
+    asset: `${row.amount / 100} USDr`,
     subtitle: row.method.toUpperCase(),
     amount: row.amount / 100,
     usdValue: row.amount / 100,
@@ -59,6 +59,18 @@ async function getPurchaseTransactions(userId: string): Promise<Transaction[]> {
   }
 
   return allTransactions;
+}
+
+export async function getUserBalance(userId: string): Promise<number> {
+  const [fundTxs, purchaseTxs] = await Promise.all([
+    getFundTransactions(userId),
+    getPurchaseTransactions(userId),
+  ]);
+
+  const totalFunds = fundTxs.reduce((sum, tx) => sum + tx.amount, 0);
+  const totalSpent = purchaseTxs.reduce((sum, tx) => sum + tx.amount, 0);
+
+  return totalFunds - totalSpent;
 }
 
 export async function getUserTransactions(

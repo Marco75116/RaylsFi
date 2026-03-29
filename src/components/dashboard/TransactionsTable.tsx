@@ -86,18 +86,18 @@ const statusVariant: Record<
 
 function formatAmount(tx: Transaction, sign: string) {
   const fmt = (value: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(value);
+    `$${new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value)}`;
 
   if (tx.type === "purchase") {
-    return `- ${fmt(tx.amount)}`;
+    return `- ${fmt(tx.amount)} USDr`;
   }
   if (tx.usdValue > 0) {
-    return `${sign} ${fmt(tx.usdValue)}`;
+    return `${sign} ${fmt(tx.usdValue)} USDr`;
   }
-  return `${sign} ${fmt(tx.amount)}`;
+  return `${sign} ${fmt(tx.amount)} USDr`;
 }
 
 type FilterTab = "all" | Transaction["type"];
@@ -214,11 +214,6 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
                       <p className="text-sm font-medium">
                         {formatAmount(tx, config.sign)}
                       </p>
-                      {tx.cashback !== undefined && tx.cashback > 0 && (
-                        <p className="text-xs text-emerald-600">
-                          +${tx.cashback.toFixed(2)} cashback
-                        </p>
-                      )}
                     </TableCell>
                   </TableRow>
                 );
