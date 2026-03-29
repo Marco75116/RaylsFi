@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   ArrowDownLeft,
@@ -92,17 +91,17 @@ export function TransactionsList({ transactions }: TransactionsListProps) {
               const Icon = tx.type === "fund" ? Plus : config.icon;
 
               const fmt = (v: number) =>
-                new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(v);
+                `$${new Intl.NumberFormat("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }).format(v)}`;
 
               const formattedAmount =
                 tx.type === "purchase"
-                  ? `– ${fmt(tx.amount)} USD`
+                  ? `– ${fmt(tx.amount)} USDr`
                   : tx.usdValue > 0
-                    ? `${config.sign} ${fmt(tx.usdValue)}`
-                    : `${config.sign} ${fmt(tx.amount)}`;
+                    ? `${config.sign} ${fmt(tx.usdValue)} USDr`
+                    : `${config.sign} ${fmt(tx.amount)} USDr`;
 
               return (
                 <div key={tx.id}>
@@ -121,24 +120,11 @@ export function TransactionsList({ transactions }: TransactionsListProps) {
                             {tx.subtitle}
                           </CardDescription>
                         )}
-                        {tx.type === "purchase" && (
-                          <Badge
-                            variant="secondary"
-                            className="mt-0.5 bg-emerald-50 px-1.5 py-0 text-[10px] text-emerald-600 hover:bg-emerald-50"
-                          >
-                            Cashback
-                          </Badge>
-                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="text-right">
                         <p className="text-sm font-medium">{formattedAmount}</p>
-                        {tx.cashback !== undefined && tx.cashback > 0 && (
-                          <p className="text-xs text-emerald-600">
-                            + ${tx.cashback.toFixed(2)} USD
-                          </p>
-                        )}
                         {tx.type === "send" && tx.usdValue === 0 && (
                           <p className="text-xs text-emerald-600">
                             + {tx.amount.toFixed(2)}

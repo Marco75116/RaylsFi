@@ -22,11 +22,10 @@ export function BalanceCard({ totalBalance }: BalanceCardProps) {
   const [visible, setVisible] = useState(true);
   const [addFundsOpen, setAddFundsOpen] = useState(false);
 
-  const formatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  const formatted = `$${new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
-  }).format(totalBalance);
+    maximumFractionDigits: 2,
+  }).format(totalBalance)}`;
 
   return (
     <>
@@ -49,9 +48,6 @@ export function BalanceCard({ totalBalance }: BalanceCardProps) {
           </CardDescription>
           <CardTitle className="text-4xl font-bold tracking-tight text-white">
             {visible ? formatted : "••••••"}
-            <span className="ml-1.5 text-sm font-normal text-zinc-400">
-              usd
-            </span>
           </CardTitle>
         </CardHeader>
         <CardFooter className="justify-center gap-3 pb-6">

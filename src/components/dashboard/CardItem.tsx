@@ -18,14 +18,14 @@ const statusColors = {
 
 export function CardItem({ card }: CardItemProps) {
   const spentPercent = (card.spent / card.spendLimit) * 100;
-  const formattedSpent = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(card.spent);
-  const formattedLimit = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(card.spendLimit);
+  const formattedSpent = `$${new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(card.spent)} USDr`;
+  const formattedLimit = `$${new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(card.spendLimit)} USDr`;
 
   return (
     <div className="space-y-4">
