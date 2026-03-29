@@ -32,6 +32,16 @@ const vaultAbi = [
     inputs: [{ name: "userId", type: "string" }],
     outputs: [],
   },
+  {
+    name: "withdraw",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "userId", type: "string" },
+      { name: "amount", type: "uint256" },
+    ],
+    outputs: [],
+  },
 ] as const;
 
 function getAccount() {
@@ -62,6 +72,29 @@ export async function depositToVault(userId: string, amountInCents: number) {
     functionName: "deposit",
     args: [userId],
     value,
+  });
+
+  await publicClient.waitForTransactionReceipt({ hash });
+
+  return hash;
+}
+
+export async function withdrawFromVault(userId: string, amountInCents: number) {
+  const account = getAccount();
+  const walletClient = createWalletClient({
+    account,
+    chain: raylsTestnet,
+    transport: http(),
+  });
+
+  const scaledAmount = amountInCents / 100_000;
+  const value = parseEther(scaledAmount.toString());
+
+  const hash = await walletClient.writeContract({
+    address: VAULT_ADDRESS,
+    abi: vaultAbi,
+    functionName: "withdraw",
+    args: [userId, value],
   });
 
   await publicClient.waitForTransactionReceipt({ hash });

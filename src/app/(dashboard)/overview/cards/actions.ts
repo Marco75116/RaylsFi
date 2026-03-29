@@ -11,7 +11,7 @@ import {
   retrieveStripeCardDetails,
   simulateStripePayment,
 } from "@/lib/stripe-helpers";
-import { depositToVault } from "@/lib/rayls";
+import { depositToVault, withdrawFromVault } from "@/lib/rayls";
 
 export async function createCard(type: "virtual" | "physical") {
   const session = await auth.api.getSession({
@@ -93,9 +93,13 @@ export async function simulatePayment(
     throw new Error("Not authenticated");
   }
 
-  return simulateStripePayment({
+  const result = await simulateStripePayment({
     cardId,
     amount,
     merchantName,
   });
+
+  await withdrawFromVault(session.user.id, amount);
+
+  return result;
 }
