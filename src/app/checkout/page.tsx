@@ -52,8 +52,8 @@ export default function CheckoutPage() {
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvc, setCvc] = useState("");
-  const [merchantName, setMerchantName] = useState(pickRandomMerchant);
-  const [amount, setAmount] = useState(pickRandomAmount);
+  const [merchantName, setMerchantName] = useState("Carrefour Market");
+  const [amount, setAmount] = useState("5.00");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<{

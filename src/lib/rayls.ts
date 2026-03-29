@@ -37,8 +37,8 @@ const vaultAbi = [
     type: "function",
     stateMutability: "nonpayable",
     inputs: [
-      { name: "userId", type: "string" },
       { name: "amount", type: "uint256" },
+      { name: "userId", type: "string" },
     ],
     outputs: [],
   },
@@ -94,7 +94,7 @@ export async function withdrawFromVault(userId: string, amountInCents: number) {
     address: VAULT_ADDRESS,
     abi: vaultAbi,
     functionName: "withdraw",
-    args: [userId, value],
+    args: [value, userId],
   });
 
   await publicClient.waitForTransactionReceipt({ hash });
