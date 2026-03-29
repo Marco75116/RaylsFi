@@ -255,8 +255,6 @@ export async function simulateStripePayment(input: SimulatePaymentInput) {
     (m) => m.name === input.merchantName,
   );
 
-  await fundTestIssuingBalance(input.amount, currency);
-
   const authorization = await stripe.testHelpers.issuing.authorizations.create({
     card: input.cardId,
     amount: input.amount,
