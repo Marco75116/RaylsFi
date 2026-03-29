@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -23,10 +24,13 @@ import {
   ChevronRight,
   Copy,
   AlertCircle,
+  Loader2,
+  DollarSign,
 } from "lucide-react";
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
 import { useSession } from "@/lib/auth-client";
+import { fundBalance } from "@/app/(dashboard)/overview/cards/actions";
 
 type View = "select" | "bank" | "crypto";
 
@@ -58,6 +62,9 @@ const NETWORKS = [
 const DEPOSIT_ADDRESS = "0xE08cd6C8l7c7aBfD73lF5954dA0c3B8Ala8c23d3";
 
 function BankTransferView({ userName }: { userName: string }) {
+  const [amount, setAmount] = useState("");
+  const [isPending, startTransition] = useTransition();
+
   const rows = [
     { label: "Fee:", value: BANK_DETAILS.fee },
     { label: "Account holder name:", value: userName },
@@ -71,6 +78,24 @@ function BankTransferView({ userName }: { userName: string }) {
     const text = rows.map((r) => `${r.label} ${r.value}`).join("\n");
     navigator.clipboard.writeText(text);
     toast.success("Bank details copied to clipboard");
+  }
+
+  function handleFund() {
+    const cents = Math.round(parseFloat(amount) * 100);
+    if (!cents || cents <= 0) {
+      toast.error("Enter a valid amount");
+      return;
+    }
+
+    startTransition(async () => {
+      try {
+        await fundBalance(cents);
+        toast.success(`$${(cents / 100).toFixed(2)} funded to issuing balance`);
+        setAmount("");
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Failed to fund balance");
+      }
+    });
   }
 
   return (
@@ -100,6 +125,34 @@ function BankTransferView({ userName }: { userName: string }) {
         <Copy className="size-4" />
         Copy All
       </Button>
+
+      <Separator />
+
+      <div className="space-y-3">
+        <p className="text-sm font-medium">Fund issuing balance (test)</p>
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <DollarSign className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="number"
+              min="0.01"
+              step="0.01"
+              placeholder="0.00"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              disabled={isPending}
+              className="pl-9"
+            />
+          </div>
+          <Button
+            onClick={handleFund}
+            disabled={isPending || !amount}
+            className="rounded-full bg-purple-600 hover:bg-purple-700"
+          >
+            {isPending ? <Loader2 className="size-4 animate-spin" /> : "Fund"}
+          </Button>
+        </div>
+      </div>
 
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
         <div className="flex gap-3">
