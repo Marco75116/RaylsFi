@@ -8,10 +8,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Eye, Loader2, Wifi } from "lucide-react";
+import { Eye, Loader2, Snowflake, ShieldCheck, Wifi } from "lucide-react";
 import Image from "next/image";
 import { Card } from "@/lib/types/dashboard";
-import { getCardDetails } from "@/app/(dashboard)/overview/cards/actions";
+import {
+  getCardDetails,
+  toggleCardStatus,
+} from "@/app/(dashboard)/overview/cards/actions";
 
 type CardDetails = {
   number: string | null;
@@ -154,6 +157,8 @@ export function CardDetailsDialog({
   const [flipped, setFlipped] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [cardStatus, setCardStatus] = useState(card.status);
+  const [isToggling, startToggleTransition] = useTransition();
 
   function handleReveal() {
     setError(null);
@@ -165,6 +170,21 @@ export function CardDetailsDialog({
       } catch (e) {
         setError(
           e instanceof Error ? e.message : "Failed to retrieve card details",
+        );
+      }
+    });
+  }
+
+  function handleToggleStatus() {
+    setError(null);
+    const newStatus = cardStatus === "active" ? "inactive" : "active";
+    startToggleTransition(async () => {
+      try {
+        await toggleCardStatus(card.id, newStatus);
+        setCardStatus(newStatus === "active" ? "active" : "frozen");
+      } catch (e) {
+        setError(
+          e instanceof Error ? e.message : "Failed to update card status",
         );
       }
     });
@@ -208,6 +228,24 @@ export function CardDetailsDialog({
                 <Eye className="size-4" />
               )}
               Show card details
+            </Button>
+          )}
+
+          {cardStatus !== "pending" && (
+            <Button
+              onClick={handleToggleStatus}
+              disabled={isToggling}
+              variant={cardStatus === "active" ? "outline" : "default"}
+              className="gap-2 rounded-full"
+            >
+              {isToggling ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : cardStatus === "active" ? (
+                <Snowflake className="size-4" />
+              ) : (
+                <ShieldCheck className="size-4" />
+              )}
+              {cardStatus === "active" ? "Freeze card" : "Unfreeze card"}
             </Button>
           )}
         </div>
