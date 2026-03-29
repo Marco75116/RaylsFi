@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm";
 import {
   createStripeCard,
   retrieveStripeCardDetails,
+  simulateStripePayment,
 } from "@/lib/stripe-helpers";
 
 export async function createCard(type: "virtual" | "physical") {
@@ -52,4 +53,24 @@ export async function getCardDetails(cardId: string) {
   }
 
   return retrieveStripeCardDetails(cardId);
+}
+
+export async function simulatePayment(
+  cardId: string,
+  amount: number,
+  merchantName: string,
+) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  return simulateStripePayment({
+    cardId,
+    amount,
+    merchantName,
+  });
 }

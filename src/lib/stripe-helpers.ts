@@ -1,4 +1,8 @@
+import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
+
+type MerchantCategory =
+  Stripe.TestHelpers.Issuing.AuthorizationCreateParams.MerchantData["category"];
 
 const PARIS_ADDRESSES = [
   { line1: "1 Rue de Rivoli", postalCode: "75001" },
@@ -22,6 +26,101 @@ const PARIS_ADDRESSES = [
   { line1: "16 Rue Mouffetard", postalCode: "75005" },
   { line1: "2 Place des Vosges", postalCode: "75004" },
 ] as const;
+
+export const FRENCH_MERCHANTS = [
+  {
+    name: "Carrefour Market",
+    city: "Paris",
+    category: "grocery_stores_supermarkets",
+  },
+  { name: "Boulangerie Paul", city: "Paris", category: "bakeries" },
+  {
+    name: "Monoprix Haussmann",
+    city: "Paris",
+    category: "grocery_stores_supermarkets",
+  },
+  {
+    name: "Le Petit Cler",
+    city: "Paris",
+    category: "eating_places_restaurants",
+  },
+  {
+    name: "Pharmacie Lafayette",
+    city: "Paris",
+    category: "drug_stores_and_pharmacies",
+  },
+  { name: "FNAC Saint-Lazare", city: "Paris", category: "electronics_stores" },
+  {
+    name: "Cafe de Flore",
+    city: "Paris",
+    category: "eating_places_restaurants",
+  },
+  {
+    name: "Decathlon Madeleine",
+    city: "Paris",
+    category: "sporting_goods_stores",
+  },
+  {
+    name: "Picard Surgelés",
+    city: "Paris",
+    category: "grocery_stores_supermarkets",
+  },
+  {
+    name: "Le Bouillon Chartier",
+    city: "Paris",
+    category: "eating_places_restaurants",
+  },
+  {
+    name: "Sephora Champs-Élysées",
+    city: "Paris",
+    category: "cosmetic_stores",
+  },
+  {
+    name: "Franprix Bastille",
+    city: "Paris",
+    category: "grocery_stores_supermarkets",
+  },
+  {
+    name: "Biocoop Oberkampf",
+    city: "Paris",
+    category: "grocery_stores_supermarkets",
+  },
+  {
+    name: "Leroy Merlin",
+    city: "Ivry-sur-Seine",
+    category: "lumber_building_materials_stores",
+  },
+  {
+    name: "Le Relais de l'Entrecôte",
+    city: "Paris",
+    category: "eating_places_restaurants",
+  },
+  {
+    name: "Tabac Le Diplomate",
+    city: "Paris",
+    category: "cigar_stores_and_stands",
+  },
+  { name: "Darty République", city: "Paris", category: "electronics_stores" },
+  { name: "Chez Janou", city: "Paris", category: "eating_places_restaurants" },
+  {
+    name: "Total Energies Station",
+    city: "Paris",
+    category: "service_stations",
+  },
+  {
+    name: "Nicolas Vins",
+    city: "Paris",
+    category: "package_stores_beer_wine_and_liquor",
+  },
+] as const satisfies ReadonlyArray<{
+  name: string;
+  city: string;
+  category: string;
+}>;
+
+export function getRandomMerchant() {
+  return FRENCH_MERCHANTS[Math.floor(Math.random() * FRENCH_MERCHANTS.length)];
+}
 
 let addressIndex = 0;
 
@@ -120,6 +219,84 @@ export async function retrieveStripeCardDetails(cardId: string) {
     expMonth: card.exp_month,
     expYear: card.exp_year,
     brand: card.brand,
+  };
+}
+
+interface SimulatePaymentInput {
+  cardId: string;
+  amount: number;
+  merchantName: string;
+  merchantCity?: string;
+  merchantCountry?: string;
+  currency?: string;
+}
+
+export async function fundTestIssuingBalance(amount: number, currency = "eur") {
+  const stripe = getStripe();
+  await (
+    stripe as unknown as {
+      rawRequest: (
+        method: string,
+        path: string,
+        params: Record<string, unknown>,
+      ) => Promise<unknown>;
+    }
+  ).rawRequest("POST", "/v1/test_helpers/issuing/fund_balance", {
+    amount,
+    currency,
+  });
+}
+
+export async function simulateStripePayment(input: SimulatePaymentInput) {
+  const stripe = getStripe();
+  const currency = input.currency ?? "eur";
+
+  const knownMerchant = FRENCH_MERCHANTS.find(
+    (m) => m.name === input.merchantName,
+  );
+
+  await fundTestIssuingBalance(input.amount, currency);
+
+  const authorization = await stripe.testHelpers.issuing.authorizations.create({
+    card: input.cardId,
+    amount: input.amount,
+    currency,
+    merchant_data: {
+      name: input.merchantName,
+      city: input.merchantCity ?? knownMerchant?.city ?? "Paris",
+      country: input.merchantCountry ?? "FR",
+      category:
+        (knownMerchant?.category as MerchantCategory) ??
+        "miscellaneous_general_merchandise",
+    },
+  });
+
+  if (authorization.status === "closed") {
+    return {
+      id: authorization.id,
+      amount: authorization.amount,
+      currency: authorization.currency,
+      merchantName: authorization.merchant_data.name ?? input.merchantName,
+      status: authorization.status,
+    };
+  }
+
+  if (authorization.status !== "pending") {
+    throw new Error(
+      `Authorization was ${authorization.status}. Check card status and spending limits.`,
+    );
+  }
+
+  const captured = await stripe.testHelpers.issuing.authorizations.capture(
+    authorization.id,
+  );
+
+  return {
+    id: captured.id,
+    amount: captured.amount,
+    currency: captured.currency,
+    merchantName: captured.merchant_data.name ?? input.merchantName,
+    status: captured.status,
   };
 }
 

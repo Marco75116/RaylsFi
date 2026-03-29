@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { ContentLayout } from "@/components/admin-panel/ContentLayout";
 import { CardCarousel } from "@/components/dashboard/CardCarousel";
 import { OrderCardDialog } from "@/components/dashboard/OrderCardDialog";
+import { SimulatePaymentDialog } from "@/components/dashboard/SimulatePaymentDialog";
 import { Separator } from "@/components/ui/separator";
 import { CardsTable } from "@/components/dashboard/CardsTable";
 import { auth } from "@/lib/auth";
@@ -58,7 +59,10 @@ export default async function CardsPage() {
 
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold tracking-tight">Your cards</h2>
-          <OrderCardDialog />
+          <div className="flex gap-2">
+            <SimulatePaymentDialog cards={cards} />
+            <OrderCardDialog />
+          </div>
         </div>
 
         <CardsTable cards={cards} />
