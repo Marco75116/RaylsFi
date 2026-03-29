@@ -15,7 +15,7 @@ async function getFundTransactions(userId: string): Promise<Transaction[]> {
   return rows.map((row) => ({
     id: row.id,
     type: "fund" as const,
-    asset: `${row.amount / 100} USDr`,
+    asset: `${row.amount / 100} USD`,
     subtitle: row.method.toUpperCase(),
     amount: row.amount / 100,
     usdValue: row.amount / 100,

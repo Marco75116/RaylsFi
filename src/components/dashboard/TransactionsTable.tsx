@@ -91,13 +91,15 @@ function formatAmount(tx: Transaction, sign: string) {
       maximumFractionDigits: 2,
     }).format(value)}`;
 
+  const currency = tx.type === "fund" ? "USD" : "USDr";
+
   if (tx.type === "purchase") {
-    return `- ${fmt(tx.amount)} USDr`;
+    return `- ${fmt(tx.amount)} ${currency}`;
   }
   if (tx.usdValue > 0) {
-    return `${sign} ${fmt(tx.usdValue)} USDr`;
+    return `${sign} ${fmt(tx.usdValue)} ${currency}`;
   }
-  return `${sign} ${fmt(tx.amount)} USDr`;
+  return `${sign} ${fmt(tx.amount)} ${currency}`;
 }
 
 type FilterTab = "all" | Transaction["type"];
